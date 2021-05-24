@@ -9,59 +9,142 @@
 <hr />
 <html>
 <body>
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            @*      <div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
+    <div class="validation-form">
+        <form method="Post" id="myForm">
+
+            <h3>jQuery Validation Form</h3>
             @*<div class="form-group">
-            <label asp-for="ProductID" class="control-label"></label>
-            <input asp-for="ProductID" class="form-control" />
-            <span asp-validation-for="ProductID" class="text-danger"></span>
-        </div>*@
-            <script src="Scripts/jquery-1.10.2.min.js"></script>
-            <script src="Scripts/jquery.validate.min.js"></script>
-            <form id="basic-form" action="" method="post">
-                <p>
-                    <label for="name">Name <span>(required, at least 3 characters)</span></label>
-                    <input id="name" name="name" minlength="3" type="text" required>
-                </p>
-                <p>
-                    <label for="email">E-Mail <span>(required)</span></label>
-                    <input id="email" type="email" name="email" required>
-                </p>
-                @*<p>
-                    <input class="submit" type="submit" value="SUBMIT">
-                </p>*@
-            </form>
-
-
-            @*<form name="myForm" action="/action_page.php" onsubmit="return validateForm()" method="post">*@
-
-
-            @*</form>*@
-            @*<div class="form-group">
+                    <input type="text" placeholder="First Name" id="firstName">
+                    <div class="first-name-msg"></div>
+                </div>*@
+        <div class="form-group">
             <label asp-for="ProductName" class="control-label"></label>
-            <input asp-for="ProductName" class="form-control" />
-            <span asp-validation-for="ProductName" class="text-danger"></span>
-        </div>*@
+            <input asp-for="ProductName" id="productName" class="form-control" />
+            <div class="product-name-msg"></div>
+        </div>
             <div class="form-group">
                 <label asp-for="Rate" class="control-label"></label>
-                <input asp-for="Rate" class="form-control" />
-                <span asp-validation-for="Rate" class="text-danger"></span>
+                <input asp-for="Rate" id="rate" class="form-control" />
+                <div class="rate-msg"></div>
+
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
+            <button type="submit" class="btn btn-success">
+                Submit
+            </button>
+            <span id="error_message" class="text-danger"></span>
+            <span id="success_message" class="text-danger"></span>
         </form>
     </div>
-</div>
-    </body>
-</Html>
+</body>
+</html>
 
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+@*@section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }*@
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript"></script>
+@*<script type="text/javascript" src="validate.js"></script>*@
+
+<script>
+    $(document).ready(function () {
+
+        $('#productName').on('input', function () {
+            var productName = $(this).val();
+
+            var validName = /^[a-zA-Z ]*$/;
+            if (productName.length == 0) {
+                $('.product-name-msg').addClass('invalid-msg').text("Product Name is required");
+                $(this).addClass('invalid-input').removeClass('valid-input');
+
+            }
+            else if (!validName.test(productName)) {
+                $('.product-name-msg').addClass('invalid-msg').text('only characters & Whitespace are allowed');
+                $(this).addClass('invalid-input').removeClass('valid-input');
+
+            }
+
+            else {
+                $('.product-name-msg').empty();
+                $(this).addClass('invalid-input').removeClass('valid-input');
+            }
+        });
+        $('#rate').on('input', function () {
+            var x = $(this).val();
+            if (isNaN(x) || x < 1 || x > 1000) {
+                $('.rate-msg').addClass('invalid-msg').text('Only Number greater than 0 and Less than 1000 are allowed');
+                $(this).addClass('invalid-input').removeClass('valid-input');
+            }
+            else {
+                $('.rate-msg').empty();
+                $(this).addClass('invalid-input').removeClass('valid-input');
+            }
+        });
+
+    });
+
+    //        $('input').on('input', function (e) {
+    //            if ($('#myForm').find('.valid-input').length == 2) {
+    //                $('#submit-btn').removeClass('allowed-submit');
+    //                $('#submit-btn').removeAttr('disabled');
+    //            }
+    //            else {
+    //                e.preventDefault();
+    //                $('#submit-btn').attr('disabled', 'disabled')
+
+    //            }
+    //        });
+    //    //    $.ajax({
+    //    //        type: "POST",
+    //    //        url: [ProductController]/[Create],
+    //    //        data: formData,
+    //    //        dataType: "json",
+    //    //        encode: true,
+    //    //    }).done(function (data) {
+    //    //        console.log(data);
+    //    //    });
+
+    //    //    event.preventDefault();
+    //    //});
+    ////});
+    //    });
+
+
+
+    $(document).ready(function () {      
+        $("#myForm").submit(function (event) {
+            var formData = {
+                productName: $("#productName").val(),
+                rate: $("#rate").val(),
+            };           
+            $("#myForm").click(function () {
+                var productName = $("#productName").val();
+                var rate = $("#rate").val();                
+                if (productName == '' || rate == '') {
+                    $("#error_message").html("All field are Required");
+                }
+                
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "Create",
+                data: formData,
+                dataType: "json",
+                encode: true,
+                success: function (data) {
+                   console.log('Submission was successful.');
+                   console.log(data);
+                },
+            }).done(function (data) {
+                console.log(data);
+            });
+            event.preventDefault();
+
+        });
+    });
+</script>

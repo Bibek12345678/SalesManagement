@@ -24,12 +24,12 @@ namespace SalesManagement.Controllers
         {
             return View(new Product());
         }
-    
+
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Product objProduct)
+        public IActionResult Create([FromBody]  Product objProduct)
         {
             List<Product> products = new List<Product>();
             String CS = "Data Source=DESKTOP-REU4K57; Initial Catalog = SaleTransaction; User ID = sa; Password = bibek;Integrated Security=True";
