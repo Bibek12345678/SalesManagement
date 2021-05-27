@@ -6,12 +6,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SalesManagement.Models;
+using SalesManagement.Services;
 
 namespace SalesManagement.Controllers
 {
     public class CustomerController : Controller
     {
-        String CS = "Data Source=DESKTOP-REU4K57; Initial Catalog = SaleTransaction; User ID = sa; Password = bibek;Integrated Security=True";
+       
         CustomerDataAccessLayer cdal = new CustomerDataAccessLayer();
         // GET: Customer
         public IActionResult Index()
@@ -24,7 +25,7 @@ namespace SalesManagement.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View(new Customer());
+            return View();
         }
         [HttpPost]
         public IActionResult Create(Customer objCustomer)
@@ -33,10 +34,10 @@ namespace SalesManagement.Controllers
             // int Count = 0;
             List<Customer> customers = new List<Customer>();
             
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
-                SqlCommand cmd = new SqlCommand("Select * from tblCustomer where CustomerName = @CustomerName ", con);
-                cmd.CommandType = CommandType.Text;
+                SqlCommand cmd = new SqlCommand("SpCustomerCustomer ", con);
+                cmd.CommandType = CommandType.StoredProcedure;
                 con.Open();
                 cmd.Parameters.AddWithValue("@CustomerName", objCustomer.CustomerName.ToString());
                 // cmd.ExecuteNonQuery();
@@ -55,17 +56,14 @@ namespace SalesManagement.Controllers
             var dup = customers.Where(x => x.CustomerName == objCustomer.CustomerName).ToList();
             if (dup.Count() > 0)
             {
-                ModelState.AddModelError(" ", "The value is already added");
-                objCustomer.CustomerName = null;
-                return View(objCustomer);
+                return BadRequest(new { message = "The Customer Name has Already been Added" });
             }
             if (ModelState.IsValid)
             {
                 cdal.AddCustomer(objCustomer);
-                return RedirectToAction("Index");
+                return Ok(new { message = $"Product {objCustomer.CustomerName} added successfully" });
             }
-            return View(objCustomer);
-
+            return BadRequest(new { message = "Model is not valid" });
         }
 
 

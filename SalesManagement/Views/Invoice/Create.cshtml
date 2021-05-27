@@ -9,18 +9,18 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form id="myForm">
             <div class="form-group">
-                <select asp-for="CustomerID" class="form-control" asp-items="@ViewBag.Customers">
+                <select asp-for="CustomerID" class="form-control" id="CustomerName" asp-items="@ViewBag.Customers" required>
                     <option value="">Select Customer Name</option>
                 </select>
-            </div> 
-           
-           
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <div class="customer-name-msg"></div>
             </div>
+
+
+            <button type="submit" class="btn btn-success">
+                Submit
+            </button>
         </form>
     </div>
 </div>
@@ -29,6 +29,55 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript"></script>
+<script>
+    $(document).ready(function () {
+        $("#CustomerName").on('input', function () {
+            var customerName = $(this).val();
+
+            if (customerName.length == 0) {
+                $('.customer-name-msg').addClass('invalid-msg').text("Customer Name is required");
+                $(this).addClass('invalid-input').removeClass('valid-input');
+            }
+        });
+    });
+    $(document).ready(function () {
+        $("#myForm").submit(function (event) {
+            event.stopPropagation();
+            console.log("Form submitted");
+            var formData = {
+                customerName: $("#CustomerName").val(),
+            }
+            if (formData.customerName == '') {
+                $('.customer-name-msg').addClass('invalid-msg').text("Customer Name is required");
+                $(this).addClass('invalid-input').removeClass('valid-input');
+                console.log("Invalid Form");
+                alert("Select The Customer Name");
+            }
+            else {
+                //debugger;
+                $.ajax({
+                    type: "POST",
+                    url: "create",
+                    data: formData,
+                    success: function (data) {
+
+                        console.log(data);
+                        alert(data.message);
+                        location.href = "index";
+                        console.log("Value Entered");
+                    },
+                    error: (a, b) => {
+                       // debugger;
+                        alert(b.message)
+                    }
+
+                })
+                event.preventDefault();
+            }
+        });
+
+    });
+    </Script>

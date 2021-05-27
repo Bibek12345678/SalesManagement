@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SalesManagement.Models;
+using SalesManagement.Services;
 
 namespace SalesManagement.Controllers
 {
@@ -22,21 +23,17 @@ namespace SalesManagement.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View(new Product());
+            return View();
         }
-
-
-
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create([FromBody]  Product objProduct)
+
+        public IActionResult Create(Product objProduct)
         {
             List<Product> products = new List<Product>();
-            String CS = "Data Source=DESKTOP-REU4K57; Initial Catalog = SaleTransaction; User ID = sa; Password = bibek;Integrated Security=True";
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
-                SqlCommand cmd = new SqlCommand("Select * from tblProduct where ProductName = @ProductName ", con);
-                cmd.CommandType = CommandType.Text;
+                SqlCommand cmd = new SqlCommand("SpProductProduct ", con);
+                cmd.CommandType = CommandType.StoredProcedure;
                 con.Open();
                 cmd.Parameters.AddWithValue("@ProductName", objProduct.ProductName.ToString());
                 // cmd.ExecuteNonQuery();
@@ -55,16 +52,17 @@ namespace SalesManagement.Controllers
             var dup = products.Where(x => x.ProductName == objProduct.ProductName).ToList();
             if (dup.Count() > 0)
             {
-                ModelState.AddModelError(" ", "The value is already added");
+               // ModelState.AddModelError(" ", "The value is already added");
                 objProduct.ProductName = null;
-                return View(objProduct);
+                return BadRequest(new { message = "The Product is Already Added" });
             }
+
             if (ModelState.IsValid)
             {
                 objProductDAL.AddProduct(objProduct);
-                return RedirectToAction("Index");
+                return Ok(new { message = $"Product {objProduct.ProductName} added successfully" });
             }
-            return View(objProduct);
+            return BadRequest(new { message = "Model is not valid" });
         }
         [HttpGet]
         public IActionResult Edit(int? id)

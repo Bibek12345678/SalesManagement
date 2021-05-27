@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SalesManagement.Services;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -8,11 +9,11 @@ namespace SalesManagement.Models
 {
     public class ProductDataAccessLayer
     {
-        String CS = "Data Source=DESKTOP-REU4K57; Initial Catalog = SaleTransaction; User ID = sa; Password = bibek;Integrated Security=True";
+        
         public void AddProduct(Product product)
         {
            
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpProductIns", con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -29,7 +30,7 @@ namespace SalesManagement.Models
         {
             List<Product> lstCustomer = new List<Product>();
             
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpProductSel", con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -53,7 +54,7 @@ namespace SalesManagement.Models
         public void UpdateProduct(Product product)
         {
             
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpProductUpd", con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -71,7 +72,7 @@ namespace SalesManagement.Models
         {
             Product product = new Product();
             
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
 
                 SqlCommand cmd = new SqlCommand("SpProductByID", con);
@@ -93,7 +94,7 @@ namespace SalesManagement.Models
         public void DeleteProduct(int? id)
         {
             
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpProductDel", con);
                 cmd.CommandType = CommandType.StoredProcedure;

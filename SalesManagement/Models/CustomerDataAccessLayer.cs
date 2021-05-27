@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SalesManagement.Services;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -9,11 +10,11 @@ namespace SalesManagement.Models
 {
     public class CustomerDataAccessLayer
     {
-        String CS = "Data Source=DESKTOP-REU4K57; Initial Catalog = SaleTransaction; User ID = sa; Password = bibek;Integrated Security=True";
+       
         public void AddCustomer(Customer customer)
         {
 
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpCustomerIns", con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -28,7 +29,7 @@ namespace SalesManagement.Models
         {
             List<Customer> lstCustomer = new List<Customer>();
 
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpCustomerSel", con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -49,7 +50,7 @@ namespace SalesManagement.Models
         {
             Customer customer = new Customer();
 
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpCustomerGetByID", con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -68,7 +69,7 @@ namespace SalesManagement.Models
         public void UpdateCustomer(Customer customer)
         {
 
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpCustomerUpd", con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -82,7 +83,7 @@ namespace SalesManagement.Models
         public void DeleteCustomer(int? id)
         {
 
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpCustomerDel", con);
                 cmd.CommandType = CommandType.StoredProcedure;

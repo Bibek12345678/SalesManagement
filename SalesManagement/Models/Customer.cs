@@ -9,7 +9,6 @@ namespace SalesManagement.Models
     public class Customer
     {
         public int CustomerID { get; set; }
-        [Required]
         public string CustomerName { get; set; }
     }
 

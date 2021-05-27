@@ -10,21 +10,17 @@
 <html>
 <body>
     <div class="validation-form">
-        <form method="Post" id="myForm">
+        <form id="myForm">
 
             <h3>jQuery Validation Form</h3>
-            @*<div class="form-group">
-                    <input type="text" placeholder="First Name" id="firstName">
-                    <div class="first-name-msg"></div>
-                </div>*@
-        <div class="form-group">
-            <label asp-for="ProductName" class="control-label"></label>
-            <input asp-for="ProductName" id="productName" class="form-control" />
-            <div class="product-name-msg"></div>
-        </div>
+            <div class="form-group">
+                <label asp-for="ProductName" class="control-label"></label>
+                <input asp-for="ProductName" id="productName" class="form-control" pattern="[a-zA-Z\s]+"  required/>
+                <div class="product-name-msg"></div>
+            </div>
             <div class="form-group">
                 <label asp-for="Rate" class="control-label"></label>
-                <input asp-for="Rate" id="rate" class="form-control" />
+                <input asp-for="Rate" id="rate" class="form-control" min="1" max="10000" required />
                 <div class="rate-msg"></div>
 
             </div>
@@ -42,109 +38,108 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@*@section Scripts {
-        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    }*@
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script type="text/javascript"></script>
+@*<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>*@
+    <script type="text/javascript"></script>
 @*<script type="text/javascript" src="validate.js"></script>*@
 
 <script>
-    $(document).ready(function () {
+            $(document).ready(function () {
+                $('#productName').on('input', function () {
+                    var productName = $(this).val();
 
-        $('#productName').on('input', function () {
-            var productName = $(this).val();
+                    var validName = /^[a-zA-Z ]*$/;
+                    if (productName.length == 0) {
+                        $('.product-name-msg').addClass('invalid-msg').text("Product Name is required");
+                        $(this).addClass('invalid-input').removeClass('valid-input');
 
-            var validName = /^[a-zA-Z ]*$/;
-            if (productName.length == 0) {
-                $('.product-name-msg').addClass('invalid-msg').text("Product Name is required");
-                $(this).addClass('invalid-input').removeClass('valid-input');
+                    }
+                    else if (!validName.test(productName)) {
+                        $('.product-name-msg').addClass('invalid-msg').text('only characters & Whitespace are allowed');
+                        $(this).addClass('invalid-input').removeClass('valid-input');
 
-            }
-            else if (!validName.test(productName)) {
-                $('.product-name-msg').addClass('invalid-msg').text('only characters & Whitespace are allowed');
-                $(this).addClass('invalid-input').removeClass('valid-input');
+                    }
 
-            }
-
-            else {
-                $('.product-name-msg').empty();
-                $(this).addClass('invalid-input').removeClass('valid-input');
-            }
-        });
-        $('#rate').on('input', function () {
-            var x = $(this).val();
-            if (isNaN(x) || x < 1 || x > 1000) {
-                $('.rate-msg').addClass('invalid-msg').text('Only Number greater than 0 and Less than 1000 are allowed');
-                $(this).addClass('invalid-input').removeClass('valid-input');
-            }
-            else {
-                $('.rate-msg').empty();
-                $(this).addClass('invalid-input').removeClass('valid-input');
-            }
-        });
-
-    });
-
-    //        $('input').on('input', function (e) {
-    //            if ($('#myForm').find('.valid-input').length == 2) {
-    //                $('#submit-btn').removeClass('allowed-submit');
-    //                $('#submit-btn').removeAttr('disabled');
-    //            }
-    //            else {
-    //                e.preventDefault();
-    //                $('#submit-btn').attr('disabled', 'disabled')
-
-    //            }
-    //        });
-    //    //    $.ajax({
-    //    //        type: "POST",
-    //    //        url: [ProductController]/[Create],
-    //    //        data: formData,
-    //    //        dataType: "json",
-    //    //        encode: true,
-    //    //    }).done(function (data) {
-    //    //        console.log(data);
-    //    //    });
-
-    //    //    event.preventDefault();
-    //    //});
-    ////});
-    //    });
-
-
-
-    $(document).ready(function () {      
-        $("#myForm").submit(function (event) {
-            var formData = {
-                productName: $("#productName").val(),
-                rate: $("#rate").val(),
-            };           
-            $("#myForm").click(function () {
-                var productName = $("#productName").val();
-                var rate = $("#rate").val();                
-                if (productName == '' || rate == '') {
-                    $("#error_message").html("All field are Required");
+                    else {
+                        $('.product-name-msg').empty();
+                        $(this).addClass('invalid-input').removeClass('valid-input');
+                    }
+                });
+              $('#rate').on('input', function () {
+                var x = $(this).val();
+                if (isNaN(x) || x < 1 ) {
+                $('.rate-msg').addClass('invalid-msg').text('Only Number greater than 0  are allowed');
+                    $(this).addClass('invalid-input').removeClass('valid-input');
                 }
-                
+                else {
+                $('.rate-msg').empty();
+                    $(this).addClass('invalid-input').removeClass('valid-input');
+                }
             });
-
-            $.ajax({
-                type: "POST",
-                url: "Create",
-                data: formData,
-                dataType: "json",
-                encode: true,
-                success: function (data) {
-                   console.log('Submission was successful.');
-                   console.log(data);
-                },
-            }).done(function (data) {
-                console.log(data);
-            });
-            event.preventDefault();
 
         });
-    });
+
+
+        $(document).ready(function () {
+                $("#myForm").submit(function (event) {
+                    debugger;
+                    event.stopPropagation();
+                    console.log("Form submitted");
+            //var form = $("#myForm");
+            //form.validate();
+            //$("button").submit(function (event) {
+            //    alert("Valid: " + form.valid());
+            //    event.stopPropagation();
+            //    console.log("Form Submitted");
+                    var formData = {
+                        productName: $("#productName").val(),
+                        rate: $("#rate").val(),
+                    }
+                    var validName = /^[a-zA-Z ]*$/;
+                    if (formData.productName == '' || formData.rate == '') {
+                        $('.product-name-msg').addClass('invalid-msg').text("Product Name is required");
+                        $(this).addClass('invalid-input').removeClass('valid-input');
+                        $('.rate-msg').addClass('invalid-msg').text('Only Number greater than 0  are allowed');
+                        $(this).addClass('invalid-input').removeClass('valid-input');
+                        alert("Enter the Name and Rate value");
+                        console.log("Invalid Form");
+                    }
+                    else if (!validName.test(formData.productName)) {
+
+                        alert("only characters & Whitespace are allowed");
+                        debugger;
+                    }
+                    else if (isNaN(formData.rate) || formData.rate < 0) {
+
+                        alert("Please Enter the Rate greater than 0");
+
+                    }
+
+
+                    else {
+                        // debugger;
+                        $.ajax({
+                            type: "POST",
+                            url: "create",
+                            data: formData,
+                            success: function (data) {
+
+                                console.log(data);
+                                alert(data.message);
+                                location.href = "index";
+                                console.log("Value Entered");
+                            },
+                            error: (a, b) => {
+                                // debugger;
+                                alert(b.message)
+                            }
+
+                        })
+                        event.preventDefault();
+                    }
+                });
+        });
 </script>

@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SalesManagement.Models;
+using SalesManagement.Services;
 
 namespace SalesManagement.Controllers
 {
     public class InvoiceController : Controller
     {
-        String CS = "Data Source=DESKTOP-REU4K57; Initial Catalog = SaleTransaction; User ID = sa; Password = bibek;Integrated Security=True";
+       
         InvoiceDataAccessLayer idal = new InvoiceDataAccessLayer();
         // GET: Invoice
         public IActionResult Index()
@@ -27,7 +27,7 @@ namespace SalesManagement.Controllers
             Invoice invoice = new Invoice();
             List<Customer> customers = new List<Customer>();
       
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpCustomerSel", con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -51,9 +51,18 @@ namespace SalesManagement.Controllers
         [HttpPost]
         public IActionResult Create(Invoice invoice)
         {
-            invoice.InvoiceDate = DateTime.Now;
-            idal.AddInvoice(invoice);
-            return RedirectToAction("Index");
+            try
+            {
+                invoice.InvoiceDate = DateTime.Now;
+                idal.AddInvoice(invoice);
+               return Ok(new { message = $"Invoice of{invoice.CustomerName} added successfully" });
+            }
+           catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+                
+            }
+            return BadRequest(new { message = "Model is not valid" });
         }
         [HttpGet]
         public IActionResult Details(int? id)

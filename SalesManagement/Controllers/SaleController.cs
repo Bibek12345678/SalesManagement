@@ -8,12 +8,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SalesManagement.Models;
+using SalesManagement.Services;
 
 namespace SalesManagement.Controllers
 {
     public class SaleController : Controller
     {
-        String CS = "Data Source=DESKTOP-REU4K57; Initial Catalog = SaleTransaction; User ID = sa; Password = bibek;Integrated Security=True";
+        
         SaleDataAccessLayer sdal = new SaleDataAccessLayer();
         // GET: Sale
         public IActionResult Index()
@@ -29,7 +30,7 @@ namespace SalesManagement.Controllers
             List<Product> products = new List<Product>();
             List<Customer> customers = new List<Customer>();
            
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpCustomerSel", con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -47,7 +48,7 @@ namespace SalesManagement.Controllers
                 }
                 con.Close();
             }
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpProductSelect", con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -75,12 +76,23 @@ namespace SalesManagement.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Sale sale)
+        public IActionResult Create(Sale objSale)
         {
-            // sale.SaleDate = DateTime.Now;
-            sdal.AddSale(sale);
-            return RedirectToAction("Index");
+            try{
+                sdal.AddSale(objSale);
+
+                return Ok(new { message = $"Sale  Table added successfully" });
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return BadRequest(new { message = "Model is not valid" });
         }
+           
+                //}
+        
+      
         [HttpGet]
         public IActionResult Edit(int? id)
         {
@@ -88,7 +100,7 @@ namespace SalesManagement.Controllers
             List<Product> products = new List<Product>();
             List<Customer> customers = new List<Customer>();
        
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpCustomerSel", con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -106,7 +118,7 @@ namespace SalesManagement.Controllers
                 }
                 con.Close();
             }
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpProductSelect", con);
                 cmd.CommandType = CommandType.StoredProcedure;

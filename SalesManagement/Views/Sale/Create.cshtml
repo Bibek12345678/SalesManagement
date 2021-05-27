@@ -8,29 +8,34 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form id="myForm">
+
             <div class="form-group">
                 <label asp-for="ProductName" class="control-label"></label>
-                <select asp-for="ProductID" class="form-control" asp-items="@ViewBag.Products">
+                <select asp-for="ProductID" id="ProductName" class="form-control" asp-items="@ViewBag.Products" required>
                     <option value="">Select Product Name</option>
                 </select>
+                <div class="product-name-msg"></div>
             </div>
             <div class="form-group">
                 <label asp-for="CustomerName" class="control-label"></label>
-                <select asp-for="CustomerID" class="form-control" asp-items="@ViewBag.Customers">
+                <select asp-for="CustomerID" id="CustomerName" class="form-control" asp-items="@ViewBag.Customers" required>
                     <option value="">Select Customer Name</option>
                 </select>
+                <div class="customer-name-msg"></div>
             </div>
             <div class="form-group">
                 <label asp-for="Quantity" class="control-label"></label>
-                <input asp-for="Quantity" class="form-control" />
-                <span asp-validation-for="Quantity" class="text-danger"></span>
+                <input asp-for="Quantity" id="quantity" min="1" max="10000" required class="form-control" />
+                <div class="quantity-msg"></div>
+
             </div>
-           
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
+
+            <button type="submit" class="btn btn-success">
+                Submit
+            </button>
+            <span id="error_message" class="text-danger"></span>
+            <span id="success_message" class="text-danger"></span>
         </form>
     </div>
 </div>
@@ -39,6 +44,89 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script type="text/javascript"></script>
+<script>
+    $(document).ready(function () {
+        $('#ProductName').on('input', function () {
+            var productName = $(this).val();
+            //var productName = $(this).find('option:selected').text();
+            if (productName.length == 0) {
+                $('.product-name-msg').addClass('invalid-msg').text("Product Name is required");
+                $(this).addClass('invalid-input').removeClass('valid-input');
+                console.log("ProductForm");
+            }
+        });
+        $('#CustomerName').on('input', function () {
+            var customerName = $(this).val();
+            if (customerName.length == 0) {
+                $('.customer-name-msg').addClass('invalid-msg').text("Select Customer Name");
+                $(this).addClass('invalid-input').removeClass('valid-input');
+            }
+        });
+            $('#quantity').on('input', function () {
+                var quantity = $(this).val();
+                if (isNaN(quantity) || quantity < 1) {
+                    $('.quantity-msg').addClass('invalid-msg').text('Only Number greater than 0  are allowed');
+                    $(this).addClass('invalid-input').removeClass('valid-input');
+                }
+                else {
+                    $('.quantity-msg').empty();
+                    $(this).addClass('invalid-input').removeClass('valid-input');
+                }
+        });
+    });
+
+    $(document).ready(function () {
+        $("#myForm").submit(function (event) {
+            event.stopPropagation();
+            console.log("form submitted");
+            var formData = {
+                productName: $("#ProductName").val(),
+                customerName: $("#CustomerName").val(),
+                quantity: $("#quantity").val(),
+            }
+            if (formData.productName == '' || formData.customerName == '' || formData.quantity == '') {
+                $('.product-name-msg').addClass('invalid-msg').text("Product Name is required");
+                $(this).addClass('invalid-input').removeClass('valid-input');
+                $('.customer-name-msg').addClass('invalid-msg').text("Customer Name is required");
+                $(this).addClass('invalid-input').removeClass('valid-input');
+                $('.quantity-msg').addClass('invalid-msg').text('Only Number greater than 0  are allowed');
+                $(this).addClass('invalid-input').removeClass('valid-input');
+                alert("Enter the Product Name and Customer Name and Quantity value");
+                console.log("Invalid Form");
+                debugger;
+
+            }
+            else if (isNaN(formData.quantity) || formData.quantity < 1) {
+
+                alert("Please Enter the Rate greater than 0");
+
+            }
+            else {
+                debugger;
+                $.ajax({
+                    type: "POST",
+                    url: "create",
+                    data: formData,
+                    success: function (data) {
+
+                        console.log(data);
+                        alert(data.message);
+                        location.href = "index";
+                        console.log("Value Entered");
+                    },
+                    error: (a, b) => {
+                        debugger;
+                        alert(b.message)
+                    }
+
+                })
+                event.preventDefault();
+            }
+        });
+
+    });
+</script>

@@ -1,23 +1,23 @@
-﻿using System;
+﻿using SalesManagement.Services;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace SalesManagement.Models
 {
     public class InvoiceDataAccessLayer
     {
-        String CS = "Data Source=DESKTOP-REU4K57; Initial Catalog = SaleTransaction; User ID = sa; Password = bibek;Integrated Security=True";
+      
         public void AddInvoice(Invoice invoice)
         {
            
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpInvoiceIns", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("CustomerID", invoice.CustomerID);
+                cmd.Parameters.AddWithValue("CustomerID", invoice.CustomerName.ToString());
                 // cmd.Parameters.AddWithValue("InvoiceNumber", invoice.InvoiceNumber);
                 con.Open();
                 cmd.ExecuteNonQuery();
@@ -27,7 +27,7 @@ namespace SalesManagement.Models
         public IEnumerable<Invoice> GetAllInvoice()
         {
             List<Invoice> lstInvoices = new List<Invoice>();
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpInvoiceSel", con);
                 cmd.CommandType = CommandType.Text;
@@ -53,7 +53,7 @@ namespace SalesManagement.Models
         {
             Invoice invoice = new Invoice();
             
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpInvoiceByID", con);
                 cmd.CommandType = CommandType.StoredProcedure;

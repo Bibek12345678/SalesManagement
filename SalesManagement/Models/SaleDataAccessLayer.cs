@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SalesManagement.Services;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -9,16 +10,17 @@ namespace SalesManagement.Models
 {
     public class SaleDataAccessLayer
     {
-        String CS = "Data Source=DESKTOP-REU4K57; Initial Catalog = SaleTransaction; User ID = sa; Password = bibek;Integrated Security=True";
         public void AddSale(Sale sale)
         {
             
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpSaleIns", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@ProductID", sale.ProductID);
-                cmd.Parameters.AddWithValue("@CustomerID", sale.CustomerID);
+                cmd.Parameters.AddWithValue("@ProductID", sale.ProductName.ToString());
+                // cmd.Parameters.AddWithValue("@ProductID", sale.ProductID);
+                cmd.Parameters.AddWithValue("@CustomerID", sale.CustomerName.ToString());
+               // cmd.Parameters.AddWithValue("@CustomerID", sale.CustomerID);
                 cmd.Parameters.AddWithValue("@Quantity", sale.Quantity);
                 //cmd.Parameters.AddWithValue("@SaleDate", sale.SaleDate);
                 //       cmd.Parameters.AddWithValue("@Rate", sale.Rate);
@@ -32,7 +34,7 @@ namespace SalesManagement.Models
 
         {
             List<Sale> lstSales = new List<Sale>();
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpSalesSel", con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -61,7 +63,7 @@ namespace SalesManagement.Models
         public Sale GetSaleByID(int? id)
         {
             Sale sale = new Sale();
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpSaleByID", con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -81,7 +83,7 @@ namespace SalesManagement.Models
         }
         public void UpdateSale(Sale sale)
         {
-            using (SqlConnection con = new SqlConnection(CS))
+            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpSaleUpd", con);
                 cmd.CommandType = CommandType.StoredProcedure;
