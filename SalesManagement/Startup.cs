@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SalesManagement.Models;
 
 namespace SalesManagement
 {
@@ -27,6 +28,11 @@ namespace SalesManagement
             builder.AddRazorRuntimeCompilation();
 
             services.AddControllersWithViews();
+            services.AddScoped<IProductDataAccessLayer, ProductDataAccessLayer>();
+            services.AddScoped<ICustomerDataAccessLayer, CustomerDataAccessLayer>();
+            services.AddScoped<ISaleDataAccessLayer, SaleDataAccessLayer>();
+            services.AddScoped<IInvoiceDataAccessLayer, InvoiceDataAccessLayer>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

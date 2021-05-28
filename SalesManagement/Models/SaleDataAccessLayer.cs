@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace SalesManagement.Models
 {
-    public class SaleDataAccessLayer
+    public class SaleDataAccessLayer : ISaleDataAccessLayer
     {
         public void AddSale(Sale sale)
         {
-            
+
             using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpSaleIns", con);
@@ -20,7 +20,7 @@ namespace SalesManagement.Models
                 cmd.Parameters.AddWithValue("@ProductID", sale.ProductName.ToString());
                 // cmd.Parameters.AddWithValue("@ProductID", sale.ProductID);
                 cmd.Parameters.AddWithValue("@CustomerID", sale.CustomerName.ToString());
-               // cmd.Parameters.AddWithValue("@CustomerID", sale.CustomerID);
+                // cmd.Parameters.AddWithValue("@CustomerID", sale.CustomerID);
                 cmd.Parameters.AddWithValue("@Quantity", sale.Quantity);
                 //cmd.Parameters.AddWithValue("@SaleDate", sale.SaleDate);
                 //       cmd.Parameters.AddWithValue("@Rate", sale.Rate);

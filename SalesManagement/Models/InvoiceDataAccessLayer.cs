@@ -7,12 +7,12 @@ using System.Data.SqlClient;
 
 namespace SalesManagement.Models
 {
-    public class InvoiceDataAccessLayer
+    public class InvoiceDataAccessLayer : IInvoiceDataAccessLayer
     {
-      
+
         public void AddInvoice(Invoice invoice)
         {
-           
+
             using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpInvoiceIns", con);
@@ -52,7 +52,7 @@ namespace SalesManagement.Models
         public Invoice GetInvoiceById(int? id)
         {
             Invoice invoice = new Invoice();
-            
+
             using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpInvoiceByID", con);

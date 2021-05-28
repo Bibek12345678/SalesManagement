@@ -14,13 +14,20 @@ namespace SalesManagement.Controllers
 {
     public class SaleController : Controller
     {
-        
-        SaleDataAccessLayer sdal = new SaleDataAccessLayer();
+
+        //SaleDataAccessLayer sdal = new SaleDataAccessLayer();
+
+
+        private readonly ISaleDataAccessLayer _isdal = null;
+        public SaleController(ISaleDataAccessLayer isdal)
+        {
+            _isdal = isdal;
+        }
         // GET: Sale
         public IActionResult Index()
         {
             List<Sale> sales = new List<Sale>();
-            sales = sdal.GetAllSaleDetails().ToList();
+            sales = _isdal.GetAllSaleDetails().ToList();
             return View(sales);
         }
         [HttpGet]
@@ -79,7 +86,7 @@ namespace SalesManagement.Controllers
         public IActionResult Create(Sale objSale)
         {
             try{
-                sdal.AddSale(objSale);
+                _isdal.AddSale(objSale);
 
                 return Ok(new { message = $"Sale  Table added successfully" });
             }
@@ -146,7 +153,7 @@ namespace SalesManagement.Controllers
             {
                 return NotFound();
             }
-            Sale sale = sdal.GetSaleByID(id);
+            Sale sale = _isdal.GetSaleByID(id);
             if (sale == null)
             {
                 return NotFound();
@@ -162,10 +169,10 @@ namespace SalesManagement.Controllers
             }
             if (ModelState.IsValid)
             {
-                sdal.UpdateSale(objSale);
+                _isdal.UpdateSale(objSale);
                 return RedirectToAction("Index");
             }
-            return View(sdal);
+            return View(_isdal);
 
         }
     }

@@ -12,13 +12,19 @@ namespace SalesManagement.Controllers
 {
     public class InvoiceController : Controller
     {
-       
-        InvoiceDataAccessLayer idal = new InvoiceDataAccessLayer();
+
+        //InvoiceDataAccessLayer idal = new InvoiceDataAccessLayer();
         // GET: Invoice
+        private readonly IInvoiceDataAccessLayer _iidal = null;
+        public InvoiceController(IInvoiceDataAccessLayer iidal)
+        {
+            _iidal = iidal;
+        }
+
         public IActionResult Index()
         {
             List<Invoice> invoice = new List<Invoice>();
-            invoice = idal.GetAllInvoice().ToList();
+            invoice = _iidal.GetAllInvoice().ToList();
             return View(invoice);
         }
         [HttpGet]
@@ -54,7 +60,7 @@ namespace SalesManagement.Controllers
             try
             {
                 invoice.InvoiceDate = DateTime.Now;
-                idal.AddInvoice(invoice);
+                _iidal.AddInvoice(invoice);
                return Ok(new { message = $"Invoice of{invoice.CustomerName} added successfully" });
             }
            catch(Exception e)
@@ -71,7 +77,7 @@ namespace SalesManagement.Controllers
             {
                 return NotFound();
             }
-            Invoice objInvoice = idal.GetInvoiceById(id);
+            Invoice objInvoice = _iidal.GetInvoiceById(id);
             if (objInvoice == null)
             {
                 return NotFound();

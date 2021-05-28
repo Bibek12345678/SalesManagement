@@ -12,13 +12,20 @@ namespace SalesManagement.Controllers
 {
     public class CustomerController : Controller
     {
-       
-        CustomerDataAccessLayer cdal = new CustomerDataAccessLayer();
-        // GET: Customer
+
+
+        //   CustomerDataAccessLayer cdal = new CustomerDataAccessLayer();
+        private readonly ICustomerDataAccessLayer _cdal = null;
+
+        public CustomerController(ICustomerDataAccessLayer icdal)
+        {
+            _cdal = icdal;
+        }
+
         public IActionResult Index()
         {
             List<Customer> lstCustomer = new List<Customer>();
-            lstCustomer = cdal.GetAllCustomer().ToList();
+            lstCustomer = _cdal.GetAllCustomer().ToList();
             return View(lstCustomer);
         }
 
@@ -60,7 +67,7 @@ namespace SalesManagement.Controllers
             }
             if (ModelState.IsValid)
             {
-                cdal.AddCustomer(objCustomer);
+                _cdal.AddCustomer(objCustomer);
                 return Ok(new { message = $"Product {objCustomer.CustomerName} added successfully" });
             }
             return BadRequest(new { message = "Model is not valid" });
@@ -76,7 +83,7 @@ namespace SalesManagement.Controllers
             {
                 return NotFound();
             }
-            Customer customer = cdal.GetCustomerById(id);
+            Customer customer = _cdal.GetCustomerById(id);
             if (customer == null)
             {
                 return NotFound();
@@ -92,7 +99,7 @@ namespace SalesManagement.Controllers
             }
             if (ModelState.IsValid)
             {
-                cdal.UpdateCustomer(customer);
+                _cdal.UpdateCustomer(customer);
                 return RedirectToAction("Index");
             }
             return View(customer);
@@ -104,7 +111,7 @@ namespace SalesManagement.Controllers
             {
                 return NotFound();
             }
-            Customer customer = cdal.GetCustomerById(id);
+            Customer customer = _cdal.GetCustomerById(id);
             if (customer == null)
             {
                 return NotFound();
@@ -114,7 +121,7 @@ namespace SalesManagement.Controllers
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            cdal.DeleteCustomer(id);
+            _cdal.DeleteCustomer(id);
             return RedirectToAction("Index");
         }
     }

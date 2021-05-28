@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SalesManagement.Models;
 using SalesManagement.Services;
@@ -12,11 +10,17 @@ namespace SalesManagement.Controllers
 {
     public class ProductController : Controller
     {
-        ProductDataAccessLayer objProductDAL = new ProductDataAccessLayer();
+        //  ProductDataAccessLayer pdal = new ProductDataAccessLayer();
+        private readonly IProductDataAccessLayer _ipdal = null;
+        public ProductController(IProductDataAccessLayer ipdal)
+        {
+            _ipdal = ipdal;
+        }
+     
         public IActionResult Index()
         {
             List<Product> products = new List<Product>();
-            products = objProductDAL.GetAllProducts().ToList();
+            products = _ipdal.GetAllProducts().ToList();
             return View(products);
         }
 
@@ -59,7 +63,7 @@ namespace SalesManagement.Controllers
 
             if (ModelState.IsValid)
             {
-                objProductDAL.AddProduct(objProduct);
+                _ipdal.AddProduct(objProduct);
                 return Ok(new { message = $"Product {objProduct.ProductName} added successfully" });
             }
             return BadRequest(new { message = "Model is not valid" });
@@ -71,7 +75,7 @@ namespace SalesManagement.Controllers
             {
                 return NotFound();
             }
-            Product product = objProductDAL.GetProductData(id);
+            Product product = _ipdal.GetProductData(id);
 
             if (product == null)
             {
@@ -89,10 +93,10 @@ namespace SalesManagement.Controllers
             }
             if (ModelState.IsValid)
             {
-                objProductDAL.UpdateProduct(objProduct);
+                _ipdal.UpdateProduct(objProduct);
                 return RedirectToAction("Index");
             }
-            return View(objProductDAL);
+            return View(_ipdal);
         }
         [HttpGet]
         public IActionResult Delete(int? id)
@@ -101,7 +105,7 @@ namespace SalesManagement.Controllers
             {
                 return NotFound();
             }
-            Product objcustomer = objProductDAL.GetProductData(id);
+            Product objcustomer = _ipdal.GetProductData(id);
 
             if (objcustomer == null)
             {
@@ -114,7 +118,7 @@ namespace SalesManagement.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int? id)
         {
-            objProductDAL.DeleteProduct(id);
+            _ipdal.DeleteProduct(id);
             return RedirectToAction("Index");
         }
     }

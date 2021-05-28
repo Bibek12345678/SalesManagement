@@ -7,12 +7,12 @@ using System.Data.SqlClient;
 
 namespace SalesManagement.Models
 {
-    public class ProductDataAccessLayer
+    public class ProductDataAccessLayer : IProductDataAccessLayer
     {
-        
+
         public void AddProduct(Product product)
         {
-           
+
             using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpProductIns", con);
@@ -29,7 +29,7 @@ namespace SalesManagement.Models
         public IEnumerable<Product> GetAllProducts()
         {
             List<Product> lstCustomer = new List<Product>();
-            
+
             using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpProductSel", con);
@@ -53,7 +53,7 @@ namespace SalesManagement.Models
         //To Update the records of a particluar Product  
         public void UpdateProduct(Product product)
         {
-            
+
             using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpProductUpd", con);
@@ -71,7 +71,7 @@ namespace SalesManagement.Models
         public Product GetProductData(int? id)
         {
             Product product = new Product();
-            
+
             using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
 
@@ -93,7 +93,7 @@ namespace SalesManagement.Models
         }
         public void DeleteProduct(int? id)
         {
-            
+
             using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpProductDel", con);

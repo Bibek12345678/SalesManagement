@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace SalesManagement.Models
 {
-    public class CustomerDataAccessLayer
+    public class CustomerDataAccessLayer : ICustomerDataAccessLayer
     {
-       
+
         public void AddCustomer(Customer customer)
         {
 
