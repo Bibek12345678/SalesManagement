@@ -1,0 +1,144 @@
+﻿@model SalesManagement.Models.Register
+
+@{
+    ViewData["Title"] = "Registration";
+}
+
+<h1>Registration</h1>
+
+<h4>RegisterAndLogin</h4>
+<hr />
+<h2>Registration</h2>
+@if (ViewBag.Status != null && Convert.ToBoolean(ViewBag.Status))
+{
+    if (ViewBag.Message != null)
+    {
+        <div class="alert alert-success">
+            <strong>Success!</strong>@ViewBag.Message
+        </div>
+    }
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <form id="myForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="FirstName" class="control-label"></label>
+                    <input asp-for="FirstName" id="firstname" class="form-control" pattern="[a-zA-Z\s]+" required />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LastName" class="control-label"></label>
+                    <input asp-for="LastName" id="lastname" class="form-control" pattern="[a-zA-Z\s]+" required />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="EmailID" class="control-label"></label>
+                    <input asp-for="EmailID" id="email" class="form-control" required />
+                    @Html.ValidationMessage("EmailExist", new { @class = "text-danger" })
+                    <span asp-validation-for="EmailID" class="text-danger"></span>
+
+                </div>
+                <div class="form-group">
+                    <label asp-for="DateOfBirth" class="control-label"></label>
+                    <input asp-for="DateOfBirth" id="dob" class="form-control" required />
+                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password" class="control-label"></label>
+                    <input asp-for="Password"  id="password" minlength="1" maxlength="14" class="form-control" required />
+                    @*//<span asp-validation-for="Password" class="text-danger"></span>*@
+                </div>
+                <div class="form-group">
+                    <label asp-for="ConfirmPassword" class="control-label"></label>
+                    <input asp-for="ConfirmPassword" id="confirmpassword" minlength="1" maxlength="14" class="form-control" required />
+                    <span id="message"></span>
+                    @*<span asp-validation-for="ConfirmPassword" class="text-danger"></span>*@
+                </div>
+                <button type="submit" class="btn btn-success">
+                    Submit
+                </button>
+            </form>
+        </div>
+    </div>
+{ 
+    if (TempData["msg"] != null)
+    {
+        <script>
+            alert('@TempData["msg"]')
+        </script>
+    }
+}
+    if (ViewBag.Message != null)
+    {
+        <div class="alert alert-danger">
+            <strong>Error!</strong>@ViewBag.Message
+        </div>
+    }
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+}
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#password, #confirmpassword').on('keyup', function () {
+            if ($('#password').val() == $('#confirmpassword').val()) {
+                $('#message').html('Matching').css('color', 'green');
+            } else
+                $('#message').html('Not Matching').css('color', 'red');
+        });
+    });
+
+    $(document).ready(function () {
+        $("#myForm").submit(function (event) {
+           // debugger;
+            event.stopPropagation();
+            console.log("Form submitted");
+            var formData = {
+                firstName: $("#firstname").val(),
+                lastName: $("#lastname").val(),
+                emailId: $("#email").val(),
+                dateOfBirth: $("#dob").val(),
+                password: $("#password").val(),
+                confirmPassword: $("#confirmpassword").val(),
+            }
+            if (formData.firstName == '' || formData.lastName == '' || formData.emailId =='' || formData.dateOfBirth=='' || formData.password=='' || formData.confirmPassword=='') {
+
+                alert("Fill up the full form");
+
+            }
+            //else if (formData.password != formData.confirmPassword) {
+            //    alert("Please Enter the Same Password");
+            //}
+            else {
+                // debugger;
+                $.ajax({
+                    type: "POST",
+                    url: "create",
+                    data: formData,
+                    success: function (data) {
+
+                        console.log(data);
+                        alert(data.message);
+                        location.href = "create";
+                        console.log("Value Entered");
+                    },
+                    error: (a, b) => {
+                        // debugger;
+                        alert(b.message)
+                    }
+
+                })
+                event.preventDefault();
+            }
+        });
+    });
+
+            </Script>
+
