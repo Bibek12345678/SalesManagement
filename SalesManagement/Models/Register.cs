@@ -16,7 +16,8 @@ namespace SalesManagement.Models
 
         [Display(Name = "Email ID")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Email ID required")]
-        //[DataType(DataType.EmailAddress)]
+        [DataType(DataType.EmailAddress)]
+        [RegularExpression(@"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$", ErrorMessage = "Please enter a valid e-mail adress")]
         public string EmailID { get; set; }
 
         [Display(Name = "Date of birth")]

@@ -33,9 +33,6 @@ namespace SalesManagement.Controllers
                 SqlCommand cmd = new SqlCommand("SpLoginValid", con);
                 cmd.CommandType = CommandType.Text;
                 con.Open();
-                /*cmd.Parameters.AddWithValue("@EmailID", userLogin.UserEmail.ToString());
-                cmd.Parameters.AddWithValue("@Password", userLogin.Password.ToString());*/
-                // cmd.ExecuteNonQuery();
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -51,17 +48,7 @@ namespace SalesManagement.Controllers
             }
             userLogin.Password = Crypto.Hash(userLogin.Password);
 
-            //if (ModelState.IsValid)
-            //{
-            //    userLogin.Password = Crypto.Hash(userLogin.Password);
-            //   // ldal.AddLogin(userLogin);
-
-            //}
-
             var user = registers.Where(query => query.EmailID.Equals(userLogin.UserEmail) && query.Password.Equals(userLogin.Password)).ToList();
-           // var userxyz = registers.Where(x => x.UserId == 19);
-           // var dup = registers.Where(x => x.EmailID == register.EmailID).ToList();
-           
             if (user.Count() == 1)
             {
                 

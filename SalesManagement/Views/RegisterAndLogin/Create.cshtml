@@ -36,8 +36,8 @@ else
                 </div>
                 <div class="form-group">
                     <label asp-for="EmailID" class="control-label"></label>
-                    <input asp-for="EmailID" id="email" class="form-control" required />
-                    @Html.ValidationMessage("EmailExist", new { @class = "text-danger" })
+                    <input asp-for="EmailID" id="email" class="form-control"  required />
+                    @*@Html.ValidationMessage("EmailExist", new { @class = "text-danger" })*@
                     <span asp-validation-for="EmailID" class="text-danger"></span>
 
                 </div>
@@ -48,7 +48,7 @@ else
                 </div>
                 <div class="form-group">
                     <label asp-for="Password" class="control-label"></label>
-                    <input asp-for="Password"  id="password" minlength="1" maxlength="14" class="form-control" required />
+                    <input asp-for="Password"  id="password" minlength="5" maxlength="14" class="form-control" required />
                     @*//<span asp-validation-for="Password" class="text-danger"></span>*@
                 </div>
                 <div class="form-group">
@@ -67,7 +67,7 @@ else
     if (TempData["msg"] != null)
     {
         <script>
-            alert('@TempData["msg"]')
+            console.log('@TempData["msg"]')
         </script>
     }
 }

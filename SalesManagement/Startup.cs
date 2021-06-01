@@ -32,6 +32,7 @@ namespace SalesManagement
             services.AddScoped<ICustomerDataAccessLayer, CustomerDataAccessLayer>();
             services.AddScoped<ISaleDataAccessLayer, SaleDataAccessLayer>();
             services.AddScoped<IInvoiceDataAccessLayer, InvoiceDataAccessLayer>();
+            services.AddScoped<IRegisterLoginAccessModel, RegisterLoginAccessModel>();
 
         }
 

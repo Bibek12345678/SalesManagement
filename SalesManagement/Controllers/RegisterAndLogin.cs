@@ -12,7 +12,12 @@ namespace SalesManagement.Controllers
 {
     public class RegisterAndLogin : Controller
     {
-        RegisterLoginAccessModel rlam = new RegisterLoginAccessModel();
+        private readonly IRegisterLoginAccessModel _irlam = null;
+
+        public RegisterAndLogin(IRegisterLoginAccessModel irlam)
+        {
+            _irlam = irlam;
+        }
         [HttpGet]
         public IActionResult Create()
         {
@@ -52,30 +57,14 @@ namespace SalesManagement.Controllers
             }
             if (ModelState.IsValid)
             {
-                //var isExist = IsEmailExist(register.EmailID);
-                //if (isExist)
-                //{
-                //    ModelState.AddModelError("EmailExist", "Email already exist");
-                //    return View(register);
-                //}
                 register.Password = Crypto.Hash(register.Password);
                 register.ConfirmPassword = Crypto.Hash(register.ConfirmPassword);
-                rlam.AddLoginForm(register);
+                _irlam.AddLoginForm(register);
                 return Ok(new { message = $"The Register is Successfully Done" });
 
             }
             return BadRequest(new { message = $"Model Is Not Valid" });
         }
-        //[NonAction]
-        //public bool IsEmailExist(string emailID)
-        //{
-        //    List<Register> registers = new List<Register>();
-        //    using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
-        //    {
-        //        var v = registers.Where(a => a.EmailID == emailID).FirstOrDefault();
-        //        return v != null;
-        //    }
-        //}
     }
 }
 
