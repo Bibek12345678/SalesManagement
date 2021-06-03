@@ -10,12 +10,14 @@ using SalesManagement.Services;
 
 namespace SalesManagement.Controllers
 {
-    public class RegisterAndLogin : Controller
+    public class UserRegisterController : Controller
     {
-        private readonly IRegisterLoginAccessModel _irlam = null;
+        private readonly IUtilityServices _utilityServices = null;
+        private readonly IUserRegisterAccessLayer _irlam = null;
 
-        public RegisterAndLogin(IRegisterLoginAccessModel irlam)
+       public UserRegisterController(IUserRegisterAccessLayer irlam , IUtilityServices utilityServices)
         {
+            _utilityServices = utilityServices;
             _irlam = irlam;
         }
         [HttpGet]
@@ -24,10 +26,10 @@ namespace SalesManagement.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Create(Register register) 
+        public IActionResult Create(UserRegister register) 
         {
-            List<Register> registers = new List<Register>();
-            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
+            List<UserRegister> registers = new List<UserRegister>();
+            using (SqlConnection con = new SqlConnection(_utilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpEmailEmail", con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -37,7 +39,7 @@ namespace SalesManagement.Controllers
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    Register newemail = new Register();
+                    UserRegister newemail = new UserRegister();
                     {
                         newemail.UserId = reader.GetInt32(0);
                         newemail.EmailID = reader.GetString(1);

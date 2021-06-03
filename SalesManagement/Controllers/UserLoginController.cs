@@ -10,10 +10,15 @@ using SalesManagement.Services;
 
 namespace SalesManagement.Controllers
 {
-    public class LoginController : Controller
+    public class UserLoginController : Controller
     {
-        LoginDataAccessLayer ldal = new LoginDataAccessLayer();
-
+        private readonly IUtilityServices _utilityServices;
+     //   private readonly IUserLoginAccessLayer _ildac;
+       public UserLoginController( IUtilityServices utilityServices)
+        {
+           // _ildac = ildac;
+            _utilityServices = utilityServices;
+        }
         public IActionResult Valid()
         {
             return View();
@@ -25,18 +30,18 @@ namespace SalesManagement.Controllers
         }
         public IActionResult Create(UserLogin userLogin)
         {
-            Register register = new Register();
+            UserRegister register = new UserRegister();
            ;
-            List<Register> registers = new List<Register>();
-            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
+            List<UserRegister> registers = new List<UserRegister>();
+            using (SqlConnection con = new SqlConnection(_utilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpLoginValid", con);
-                cmd.CommandType = CommandType.Text;
+                cmd.CommandType = CommandType.StoredProcedure;
                 con.Open();
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    Register ulogin = new Register();
+                    UserRegister ulogin = new UserRegister();
                     {
                         ulogin.UserId = reader.GetInt32(0);
                         ulogin.EmailID = reader.GetString(1);
@@ -51,8 +56,9 @@ namespace SalesManagement.Controllers
             var user = registers.Where(query => query.EmailID.Equals(userLogin.UserEmail) && query.Password.Equals(userLogin.Password)).ToList();
             if (user.Count() == 1)
             {
-                
-                return Ok(new { message = "Login form filled up successfully" });
+
+                 return Ok(new { message = "Login form filled up successfully" });
+               
                 //ModelState.AddModelError("EmailExist", $"EmailID {register.EmailID} added successfully");
                 //register.EmailID = null;
                 //TempData["msg"] = "The Email Id already exist";

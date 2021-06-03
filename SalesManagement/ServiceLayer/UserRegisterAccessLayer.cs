@@ -8,12 +8,17 @@ using System.Threading.Tasks;
 
 namespace SalesManagement.Models
 {
-    public class RegisterLoginAccessModel : IRegisterLoginAccessModel
+    public class UserRegisterAccessLayer : IUserRegisterAccessLayer
     {
-        public void AddLoginForm(Register register)
+        private readonly IUtilityServices _utilityServices;
+        public UserRegisterAccessLayer(IUtilityServices utilityServices)
+        {
+            _utilityServices = utilityServices;
+        }
+        public void AddLoginForm(UserRegister register)
         {
 
-            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
+            using (SqlConnection con = new SqlConnection(_utilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpRegisterAndLoginIns", con);
                 cmd.CommandType = CommandType.StoredProcedure;

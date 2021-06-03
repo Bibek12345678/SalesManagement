@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 namespace SalesManagement.Models
 {
-    public class Register
+    public class UserRegister
     {
         public int UserId { get; set; }
 

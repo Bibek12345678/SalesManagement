@@ -8,11 +8,17 @@ using System.Threading.Tasks;
 
 namespace SalesManagement.Models
 {
-    public class LoginDataAccessLayer
+    public class UserLoginAccessLayer : IUserLoginAccessLayer
     {
+        private readonly IUtilityServices _utilityServices = null;
+
+        public UserLoginAccessLayer(IUtilityServices utilityServices)
+        {
+            _utilityServices = utilityServices;
+        }
         public void AddLogin(UserLogin userlogin)
         {
-            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
+            using (SqlConnection con = new SqlConnection(_utilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpLoginIns", con);
                 cmd.CommandType = CommandType.StoredProcedure;

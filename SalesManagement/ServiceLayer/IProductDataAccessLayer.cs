@@ -9,5 +9,7 @@ namespace SalesManagement.Models
         IEnumerable<Product> GetAllProducts();
         Product GetProductData(int? id);
         void UpdateProduct(Product product);
+        
+        
     }
 }

@@ -14,14 +14,12 @@ namespace SalesManagement.Controllers
 {
     public class SaleController : Controller
     {
-
-        //SaleDataAccessLayer sdal = new SaleDataAccessLayer();
-
-
         private readonly ISaleDataAccessLayer _isdal = null;
-        public SaleController(ISaleDataAccessLayer isdal)
+        private readonly IUtilityServices _utilityServices;
+        public SaleController(ISaleDataAccessLayer isdal , IUtilityServices utilityServices)
         {
             _isdal = isdal;
+            _utilityServices = utilityServices;
         }
         // GET: Sale
         public IActionResult Index()
@@ -37,7 +35,7 @@ namespace SalesManagement.Controllers
             List<Product> products = new List<Product>();
             List<Customer> customers = new List<Customer>();
            
-            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
+            using (SqlConnection con = new SqlConnection(_utilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpCustomerSel", con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -55,7 +53,7 @@ namespace SalesManagement.Controllers
                 }
                 con.Close();
             }
-            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
+            using (SqlConnection con = new SqlConnection(_utilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpProductSelect", con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -107,7 +105,7 @@ namespace SalesManagement.Controllers
             List<Product> products = new List<Product>();
             List<Customer> customers = new List<Customer>();
        
-            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
+            using (SqlConnection con = new SqlConnection(_utilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpCustomerSel", con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -125,7 +123,7 @@ namespace SalesManagement.Controllers
                 }
                 con.Close();
             }
-            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
+            using (SqlConnection con = new SqlConnection(_utilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpProductSelect", con);
                 cmd.CommandType = CommandType.StoredProcedure;

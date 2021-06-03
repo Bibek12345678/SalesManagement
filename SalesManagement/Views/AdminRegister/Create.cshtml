@@ -1,0 +1,91 @@
+﻿@model SalesManagement.Models.AdminRegister
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>AdminLogin</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form id="myForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @*<div class="form-group">
+                    <label asp-for="AdminID" class="control-label"></label>
+                    <input asp-for="AdminID" class="form-control" />
+                    <span asp-validation-for="AdminID" class="text-danger"></span>
+                </div>*@
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" id="name" pattern="[a-zA-Z\s]+" class="form-control" required/>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" id="email" class="form-control" required/>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" id="password" class="form-control" required/>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="phoneno" class="control-label"></label>
+                <input asp-for="phoneno" id="phoneno" class="form-control"  required/>
+                <span asp-validation-for="phoneno" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#myForm").submit(function (event) {
+            // debugger;
+            event.stopPropagation();
+            console.log("Form submitted");
+            var formData = {
+                name: $("#name").val(),
+                email: $("#email").val(),
+                password: $("#password").val(),
+                phoneno: $("#phoneno").val(),
+            }
+            if (formData.name == '' || formData.email == '' || formData.password == '' || formData.phoneno == '') {
+                alert("Fill up the full form");
+            }
+            else {
+                // debugger;
+                $.ajax({
+                    type: "POST",
+                    url: "create",
+                    data: formData,
+                    success: function (data) {
+
+                        console.log(data);
+                        alert(data.message);
+                        location.href = "create";
+                        console.log("Value Entered");
+                    },
+                    error: (a, b) => {
+                        // debugger;
+                        alert(b.message)
+                    }
+
+                })
+                event.preventDefault();
+            }
+        });
+    });
+</script>

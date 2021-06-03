@@ -4,6 +4,7 @@ namespace SalesManagement.Models
 {
     public interface ICustomerDataAccessLayer
     {
+
         void AddCustomer(Customer customer);
         void DeleteCustomer(int? id);
         IEnumerable<Customer> GetAllCustomer();

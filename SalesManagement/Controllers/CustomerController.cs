@@ -1,10 +1,10 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using SalesManagement.Models;
 using SalesManagement.Services;
 
@@ -12,14 +12,13 @@ namespace SalesManagement.Controllers
 {
     public class CustomerController : Controller
     {
-
-
-        //   CustomerDataAccessLayer cdal = new CustomerDataAccessLayer();
+       
         private readonly ICustomerDataAccessLayer _cdal = null;
-
-        public CustomerController(ICustomerDataAccessLayer icdal)
+        private readonly IUtilityServices _utilityServices = null;
+        public CustomerController(ICustomerDataAccessLayer icdal , IUtilityServices utilityServices)
         {
             _cdal = icdal;
+            _utilityServices = utilityServices;
         }
 
         public IActionResult Index()
@@ -41,7 +40,7 @@ namespace SalesManagement.Controllers
             // int Count = 0;
             List<Customer> customers = new List<Customer>();
             
-            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
+            using (SqlConnection con = new SqlConnection(_utilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpCustomerCustomer ", con);
                 cmd.CommandType = CommandType.StoredProcedure;

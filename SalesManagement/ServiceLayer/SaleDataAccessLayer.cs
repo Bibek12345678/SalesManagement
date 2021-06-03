@@ -10,10 +10,15 @@ namespace SalesManagement.Models
 {
     public class SaleDataAccessLayer : ISaleDataAccessLayer
     {
+        private readonly IUtilityServices _utilityServices;
+        public SaleDataAccessLayer(IUtilityServices utilityServices)
+        {
+            _utilityServices = utilityServices;
+        }
         public void AddSale(Sale sale)
         {
 
-            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
+            using (SqlConnection con = new SqlConnection(_utilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpSaleIns", con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -34,7 +39,7 @@ namespace SalesManagement.Models
 
         {
             List<Sale> lstSales = new List<Sale>();
-            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
+            using (SqlConnection con = new SqlConnection(_utilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpSalesSel", con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -63,7 +68,7 @@ namespace SalesManagement.Models
         public Sale GetSaleByID(int? id)
         {
             Sale sale = new Sale();
-            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
+            using (SqlConnection con = new SqlConnection(_utilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpSaleByID", con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -83,7 +88,7 @@ namespace SalesManagement.Models
         }
         public void UpdateSale(Sale sale)
         {
-            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
+            using (SqlConnection con = new SqlConnection(_utilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpSaleUpd", con);
                 cmd.CommandType = CommandType.StoredProcedure;

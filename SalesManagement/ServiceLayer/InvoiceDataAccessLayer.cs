@@ -9,11 +9,15 @@ namespace SalesManagement.Models
 {
     public class InvoiceDataAccessLayer : IInvoiceDataAccessLayer
     {
-
+        private readonly IUtilityServices _utilityServices;
+        public InvoiceDataAccessLayer(IUtilityServices utilityServices)
+        {
+            _utilityServices = utilityServices;
+        }
         public void AddInvoice(Invoice invoice)
         {
 
-            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
+            using (SqlConnection con = new SqlConnection(_utilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpInvoiceIns", con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -27,7 +31,7 @@ namespace SalesManagement.Models
         public IEnumerable<Invoice> GetAllInvoice()
         {
             List<Invoice> lstInvoices = new List<Invoice>();
-            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
+            using (SqlConnection con = new SqlConnection(_utilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpInvoiceSel", con);
                 cmd.CommandType = CommandType.Text;
@@ -53,7 +57,7 @@ namespace SalesManagement.Models
         {
             Invoice invoice = new Invoice();
 
-            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
+            using (SqlConnection con = new SqlConnection(_utilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpInvoiceByID", con);
                 cmd.CommandType = CommandType.StoredProcedure;

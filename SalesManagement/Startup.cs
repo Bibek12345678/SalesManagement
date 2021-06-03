@@ -9,30 +9,40 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SalesManagement.Models;
+using SalesManagement.ServiceLayer;
+using SalesManagement.Services;
 
 namespace SalesManagement
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        
+        public Startup(IConfiguration config)
         {
-            Configuration = configuration;
+            Config = config;
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfiguration Config { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddMvc();
+            //string constr = this.Configuration.GetConnectionString("DefaultConnection");
             var builder = services.AddRazorPages();
             builder.AddRazorRuntimeCompilation();
 
-            services.AddControllersWithViews();
             services.AddScoped<IProductDataAccessLayer, ProductDataAccessLayer>();
             services.AddScoped<ICustomerDataAccessLayer, CustomerDataAccessLayer>();
             services.AddScoped<ISaleDataAccessLayer, SaleDataAccessLayer>();
             services.AddScoped<IInvoiceDataAccessLayer, InvoiceDataAccessLayer>();
-            services.AddScoped<IRegisterLoginAccessModel, RegisterLoginAccessModel>();
+            services.AddScoped<IUserRegisterAccessLayer, UserRegisterAccessLayer>();
+            services.AddScoped<IAdminRegisterAccessLayer, AdminRegisterAccessLayer>();
+            services.AddSingleton<IUtilityServices, UtilityServices>();
+            services.AddSingleton(Config);
+           
+            services.AddControllersWithViews();
 
         }
 
@@ -51,7 +61,6 @@ namespace SalesManagement
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
 
             app.UseAuthorization();

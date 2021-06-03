@@ -16,10 +16,13 @@ namespace SalesManagement.Controllers
         //InvoiceDataAccessLayer idal = new InvoiceDataAccessLayer();
         // GET: Invoice
         private readonly IInvoiceDataAccessLayer _iidal = null;
-        public InvoiceController(IInvoiceDataAccessLayer iidal)
+        private readonly IUtilityServices _utilityServices;
+       public InvoiceController(IInvoiceDataAccessLayer iidal , IUtilityServices utilityServices)
         {
             _iidal = iidal;
+            _utilityServices = utilityServices;
         }
+
 
         public IActionResult Index()
         {
@@ -33,7 +36,7 @@ namespace SalesManagement.Controllers
             Invoice invoice = new Invoice();
             List<Customer> customers = new List<Customer>();
       
-            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
+            using (SqlConnection con = new SqlConnection(_utilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpCustomerSel", con);
                 cmd.CommandType = CommandType.StoredProcedure;

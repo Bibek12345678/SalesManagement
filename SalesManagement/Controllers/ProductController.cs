@@ -11,10 +11,20 @@ namespace SalesManagement.Controllers
     public class ProductController : Controller
     {
         //  ProductDataAccessLayer pdal = new ProductDataAccessLayer();
-        private readonly IProductDataAccessLayer _ipdal = null;
-        public ProductController(IProductDataAccessLayer ipdal)
+        private readonly IProductDataAccessLayer _ipdal;
+        private readonly IUtilityServices _utilityServices;
+        //public ProductController(UtilityServices utilityServices)
+        //{
+        //    _utilityServices = utilityServices;
+        //}
+        //public ProductController(IProductDataAccessLayer ipdal)
+        //{
+        //    _ipdal = ipdal;
+        //}
+        public ProductController(IProductDataAccessLayer ipdal, IUtilityServices utilityServices)
         {
             _ipdal = ipdal;
+            _utilityServices = utilityServices;
         }
      
         public IActionResult Index()
@@ -34,13 +44,13 @@ namespace SalesManagement.Controllers
         public IActionResult Create(Product objProduct)
         {
             List<Product> products = new List<Product>();
-            using (SqlConnection con = new SqlConnection(UtilityServices.ConnectionString))
+            using (SqlConnection con = new SqlConnection(_utilityServices.ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand("SpProductProduct ", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 con.Open();
                 cmd.Parameters.AddWithValue("@ProductName", objProduct.ProductName.ToString());
-                // cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -56,7 +66,7 @@ namespace SalesManagement.Controllers
             var dup = products.Where(x => x.ProductName == objProduct.ProductName).ToList();
             if (dup.Count() > 0)
             {
-               // ModelState.AddModelError(" ", "The value is already added");
+                ModelState.AddModelError(" ", "The value is already added");
                 objProduct.ProductName = null;
                 return BadRequest(new { message = "The Product is Already Added" });
             }
